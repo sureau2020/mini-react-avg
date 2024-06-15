@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { Children, ReactNode, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Information from "./components/Information";
 import Status from "./components/Status";
 import False from "./components/False";
@@ -50,7 +50,8 @@ function App() {
   const [isPregnent, setIsPregnent] = useState(false);
   const [isVouloir, setIsVouloir] = useState(false);
   const [isAnswer, setIsAnswer] = useState(false);
-  const [isSame, setIsSame] = useState(false);
+  const [isLie, setIsLie] = useState(false);
+  const [isSame, setIsSame] = useState(false); //小章和玩家一不一样
   const [realChoice, setRealChoice] = useState(0);
   const [isIntro, setIsIntro] = useState(true);
 
@@ -61,9 +62,9 @@ function App() {
       aria-label="Basic outlined example"
       style={{ display: "flex", justifyContent: "center" }}
     >
-      <False onClick={() => click("撤退")}>撤退</False>
-      <False onClick={() => click("原地躲藏")}>原地躲藏</False>
-      <False onClick={() => click("前进")}>前进</False>
+      <False onClick={() => click("0")}>撤退</False>
+      <False onClick={() => click("1")}>原地躲藏</False>
+      <False onClick={() => click("2")}>前进</False>
     </div>
   );
 
@@ -76,6 +77,7 @@ function App() {
   const click = (choice: string) => {
     if (choice === "好的" && !isEnd) {
       setRound((prevRound) => prevRound + 1);
+      setIsAnswer(false);
       if (round === 0) {
         setTextLines(intros[round + 1].split("\n"));
         setIsWarning(false);
@@ -83,6 +85,11 @@ function App() {
         setIsIntro(false);
         setIsWarning(true);
         setCommand(true);
+        if (isLie && isSame) {
+          setConfidence(confidence - 1);
+        } else if (!isLie && !isSame && realChoice === alert) {
+          setConfidence(confidence + 1);
+        }
         if (isStringInList("中媚药", state)) {
           if (isStringInList("怀孕", state)) {
             setRandomN(getRandomInt(0, 3));
@@ -106,12 +113,41 @@ function App() {
         setIndexOfEvent(randomN); // 触发 useEffect
         setAlert(getRandomInt(0, 2));
       }
-    } else if (choice === "撤退") {
-      console.log("撤退");
-    } else if (choice === "原地躲藏" && !isEnd) {
-      console.log("原地躲藏");
-    } else if (choice === "前进" && !isEnd) {
-      console.log("前进");
+    } else if (!isEnd) {
+      if (Number(choice) === alert) {
+        setIsLie(true);
+      } else {
+        setIsLie(false);
+      }
+      if (confidence === 0) {
+        setIsSame(false);
+        setRealChoice(getRandomOtherNumber(Number(choice)));
+      } else if (confidence <= 3) {
+        if (getRandomInt(0, 4) === 0) {
+          setIsSame(true);
+        } else {
+          setIsSame(false);
+          setRealChoice(getRandomOtherNumber(Number(choice)));
+        }
+      } else if (confidence <= 6) {
+        if (round === 1) {
+          setIsSame(true);
+        } else if (getRandomInt(1, 2) === 1) {
+          setIsSame(true);
+        } else {
+          setIsSame(false);
+          setRealChoice(getRandomOtherNumber(Number(choice)));
+        }
+      } else if (confidence <= 9) {
+        if (getRandomInt(0, 4) === 1) {
+          setIsSame(false);
+          setRealChoice(getRandomOtherNumber(Number(choice)));
+        } else {
+          setIsSame(true);
+        }
+      } else {
+        setIsSame(true);
+      }
     }
   };
 
@@ -138,12 +174,14 @@ function App() {
               </Information>
             ) : (
               <Evenements
+                alert={alert}
                 realChoice={realChoice}
                 isAnswer={isAnswer}
                 isPregnant={isPregnent}
                 isVouloir={isVouloir}
                 indexOfEvent={indexOfEvent}
                 isSameChoice={isSame}
+                isLie={isLie}
                 cloth={cloth}
               ></Evenements>
             )}
