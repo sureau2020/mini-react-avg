@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { Children, ReactNode, useState } from "react";
+import React, { Children, ReactNode, useState, useEffect } from "react";
 import Information from "./components/Information";
 import Status from "./components/Status";
 import False from "./components/False";
@@ -39,14 +39,14 @@ function App() {
   const [isExit, setIsExit] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [isWarning, setIsWarning] = useState(true);
-  const [state, setState] = useState([]);
+  const [state, setState] = useState<string[]>([]);
   const [cloth, setCloth] = useState("常服");
   const [confidence, setConfidence] = useState(5);
   const [sin, setSin] = useState(0);
-  const [alert, setAlert] = useState(3);
+  const [alert, setAlert] = useState<number>(3);
   const [exit, setExit] = useState(2);
   const [randomN, setRandomN] = useState(1);
-  const [indexOfEvent, setIndexOfEvent] = useState(0);
+  const [indexOfEvent, setIndexOfEvent] = useState<number>(0);
   const [isPregnent, setIsPregnent] = useState(false);
   const [isVouloir, setIsVouloir] = useState(false);
   const [isAnswer, setIsAnswer] = useState(false);
@@ -66,6 +66,12 @@ function App() {
       <False onClick={() => click("前进")}>前进</False>
     </div>
   );
+
+  useEffect(() => {
+    if (indexOfEvent !== null) {
+      setIndexOfEvent(randomN);
+    }
+  }, [indexOfEvent, randomN]);
 
   const click = (choice: string) => {
     if (choice === "好的" && !isEnd) {
@@ -94,18 +100,20 @@ function App() {
         } else {
           let tmp = getRandomInt(1, 2);
           setRandomN(tmp);
-          console.log(randomN);
           setIsPregnent(false);
           setIsVouloir(false);
         }
-        setIndexOfEvent(randomN);
-        console.log(randomN);
+        setIndexOfEvent(randomN); // 触发 useEffect
         setAlert(getRandomInt(0, 2));
       }
+    } else if (choice === "撤退") {
+      console.log("撤退");
+    } else if (choice === "原地躲藏" && !isEnd) {
+      console.log("原地躲藏");
+    } else if (choice === "前进" && !isEnd) {
+      console.log("前进");
     }
   };
-
-  //random number 异步更新，没修呢，
 
   return (
     <>

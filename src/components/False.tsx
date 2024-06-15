@@ -1,14 +1,16 @@
 import React from "react";
 
 interface Props {
-  children: string;
-  onClick: (item: string) => void;
+  children: React.ReactNode;
+  onClick: () => void;
 }
 
-function False(props: Props) {
+const False: React.FC<Props> = ({ children, onClick }) => {
   return (
-    <div className="btn btn-outline-warning bg-dark">{props.children}</div>
+    <div onClick={onClick} className="btn btn-outline-warning bg-dark">
+      {children}
+    </div>
   );
-}
+};
 
 export default False;
