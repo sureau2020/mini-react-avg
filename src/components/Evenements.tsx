@@ -5,11 +5,12 @@ interface Props {
   isVouloir: boolean;
   isSameChoice: boolean;
   isLie: boolean;
-  realChoice: number;
+  //realChoice: number;
   indexOfEvent: number;
   cloth: string;
   isFucked: boolean;
   userChoice: number;
+  exit: number;
 }
 
 const Events = (props: Props) => {
@@ -19,13 +20,12 @@ const Events = (props: Props) => {
   console.log("isVouloir:" + props.isVouloir);
   console.log("isSameChoice:" + props.isSameChoice);
   console.log("isLie:" + props.isLie);
-  console.log("realChoice:" + props.realChoice);
   console.log("indexOfEvent:" + props.indexOfEvent);
   console.log("cloth:" + props.cloth);
   console.log("isFucked:" + props.isFucked);
   console.log("userChoice:" + props.userChoice);
 
-  let finalChoice: number;
+  let finalChoice: number = 0;
   let textLines: string[] = [];
   if (!props.isAnswer) {
     textLines = evenements[props.indexOfEvent].split("\n");
@@ -45,24 +45,45 @@ const Events = (props: Props) => {
       textLines.push("章北海听从了你的建议，但你骗了他。");
     } else if (!props.isSameChoice && props.userChoice === props.alert) {
       textLines.push("你骗了章北海，但他也察觉出不对，没有听从你的建议。");
-      textLines.push(`章北海最终选择了${actions[props.realChoice]}。`);
+      if (props.alert === 1) {
+        finalChoice = 0;
+        textLines.push(`章北海最终选择了${actions[finalChoice]}。`);
+      } else {
+        finalChoice = 1;
+        textLines.push(`章北海最终选择了${actions[finalChoice]}。`);
+      }
     } else if (props.isSameChoice && props.userChoice != props.alert) {
       textLines.push(`章北海听从了你的建议。`);
     } else {
-      textLines.push(
-        `章北海考虑再三，没有听从你的建议，而是选择了${
-          actions[props.realChoice]
-        }。`
-      );
+      if (props.userChoice === 0) {
+        if (props.isFucked) {
+          finalChoice = props.alert;
+        } else {
+          props.alert === 1 ? (finalChoice = 2) : (finalChoice = 1);
+        }
+        textLines.push(
+          `章北海考虑再三，没有听从你的建议，而是选择了${actions[finalChoice]}。`
+        );
+      } else {
+        if (props.isFucked) {
+          finalChoice = props.alert;
+        } else {
+          finalChoice = findRemainingNumber(props.alert, props.userChoice);
+        }
+        textLines.push(
+          `章北海考虑再三，没有听从你的建议，而是选择了${actions[finalChoice]}。`
+        );
+      }
     }
     if (props.isSameChoice) {
       finalChoice = props.userChoice;
-    } else {
-      finalChoice = props.realChoice;
     }
     switch (finalChoice) {
       case 0:
-        if (finalChoice === props.alert) {
+        if (
+          finalChoice === props.alert ||
+          (props.isFucked && !props.isSameChoice)
+        ) {
           textLines.push("撤退遇到危险。");
         } else {
           textLines.push("撤退没遇到危险。");
@@ -70,7 +91,10 @@ const Events = (props: Props) => {
 
         break;
       case 1:
-        if (finalChoice === props.alert) {
+        if (
+          finalChoice === props.alert ||
+          (props.isFucked && !props.isSameChoice)
+        ) {
           textLines.push("原地躲藏遇到危险。");
         } else {
           textLines.push("原地躲藏没遇到危险。");
@@ -78,7 +102,10 @@ const Events = (props: Props) => {
 
         break;
       default:
-        if (finalChoice === props.alert) {
+        if (
+          finalChoice === props.alert ||
+          (props.isFucked && !props.isSameChoice)
+        ) {
           textLines.push("前进遇到危险。");
         } else {
           textLines.push("前进没遇到危险。");
@@ -97,6 +124,15 @@ const Events = (props: Props) => {
 };
 
 export default Events;
+
+function findRemainingNumber(num1: number, num2: number): number {
+  const numbers = [0, 1, 2];
+  const remaining = numbers.filter((num) => num !== num1 && num !== num2);
+  if (remaining.length !== 1) {
+    throw new Error("Invalid input numbers");
+  }
+  return remaining[0];
+}
 
 const evenements = [
   `生育`, //没搞呢

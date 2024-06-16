@@ -7,6 +7,8 @@ import True from "./components/True";
 import Alert from "./components/Alert";
 import Exit from "./components/Exit";
 import Evenements from "./components/Evenements";
+import End from "./components/End";
+import Refresh from "./components/Refresh";
 
 function App() {
   const alerts: string[] = [
@@ -52,13 +54,14 @@ function App() {
   const [isAnswer, setIsAnswer] = useState(false);
   const [isLie, setIsLie] = useState(false);
   const [isSame, setIsSame] = useState(false); //小章和玩家一不一样
-  const [realChoice, setRealChoice] = useState(0);
+  //const [realChoice, setRealChoice] = useState(0);
   const [isIntro, setIsIntro] = useState(true);
   const [isFucked, setIsFucked] = useState(false);
-  const [choice, setChoice] = useState(0);
-
-  let random: number = 0;
-  let fuck: boolean;
+  const [userChoice, setChoice] = useState(0);
+  const [end, setEnd] = useState(0);
+  const [wu, setWu] = useState(0);
+  const [chu, setChu] = useState(0);
+  const [wei, setWei] = useState(0);
 
   const commands = (
     <div
@@ -79,21 +82,21 @@ function App() {
     }
   }, [indexOfEvent, randomN]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (realChoice !== null) {
       setRealChoice(random);
     }
   }, [realChoice]);
+  */
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (isFucked !== null) {
       setIsFucked(fuck);
     }
   }, [isFucked]);
+  */
 
   const click = (choice: string) => {
-    fuck = false;
-    setIsFucked(fuck);
     if (choice === "好的" && !isEnd) {
       setRound((prevRound) => prevRound + 1);
       setIsAnswer(false);
@@ -105,9 +108,12 @@ function App() {
         setIsIntro(false);
         setIsWarning(true);
         setCommand(true);
+        if ((isFucked && !isSame) || (isSame && isLie)) {
+          setSin(sin + 1);
+        }
         if (isLie && isSame) {
           setConfidence(confidence - 1);
-        } else if (!isLie && !isSame && realChoice === alert) {
+        } else if (!isSame && isFucked) {
           setConfidence(confidence + 1);
         }
         if (isStringInList("中媚药", state)) {
@@ -132,6 +138,81 @@ function App() {
         }
         setIndexOfEvent(randomN); // 触发 useEffect
         setAlert(getRandomInt(0, 2));
+        if (confidence === 0) {
+          setIsSame(false);
+          getRandomInt(0, 1) === 0 ? setIsFucked(true) : setIsFucked(false);
+        } else if (confidence <= 3) {
+          if (getRandomInt(0, 4) === 0) {
+            setIsSame(true);
+          } else {
+            setIsSame(false);
+            getRandomInt(0, 1) === 0 ? setIsFucked(true) : setIsFucked(false);
+          }
+        } else if (confidence <= 6) {
+          if (round === 1) {
+            setIsSame(true);
+          } else if (getRandomInt(1, 2) === 1) {
+            setIsSame(true);
+          } else {
+            setIsSame(false);
+            getRandomInt(0, 1) === 0 ? setIsFucked(true) : setIsFucked(false);
+          }
+        } else if (confidence <= 9) {
+          if (getRandomInt(0, 4) === 1) {
+            setIsSame(false);
+            getRandomInt(0, 1) === 0 ? setIsFucked(true) : setIsFucked(false);
+          } else {
+            setIsSame(true);
+          }
+        } else {
+          setIsSame(true);
+        }
+        if (round % 3 === 0) {
+          setIsExit(true);
+          setExit(getRandomInt(0, 2));
+        } else {
+          setIsExit(false);
+        }
+        if (
+          (indexOfEvent === 6 || indexOfEvent === 1) &&
+          (isFucked || (isLie && isSame))
+        ) {
+          if (!isStringInList("怀孕", state)) {
+            setState(state.concat("怀孕"));
+            setIsPregnent(true);
+          }
+        }
+        if (
+          (indexOfEvent === 3 || indexOfEvent === 10) &&
+          (isFucked || (isLie && isSame))
+        ) {
+          if (!isStringInList("中媚药", state)) {
+            setState(state.concat("中媚药"));
+            setIsVouloir(true);
+          }
+        }
+        if (indexOfEvent === 15) {
+          setState(state.filter((item) => item !== "中媚药"));
+          setIsVouloir(false);
+        }
+        if (indexOfEvent === 0) {
+          setState(state.filter((item) => item !== "怀孕"));
+          setIsPregnent(false);
+        }
+        if (indexOfEvent === 14) {
+          setChu(chu + 1);
+          setCloth("常服下捆绑");
+        }
+        if (indexOfEvent === 8) {
+          setCloth("常服");
+          setWu(wu + 1);
+          setState([]);
+        }
+        if (indexOfEvent === 9) {
+          setWei(wei + 1);
+          setCloth("血仆裙");
+          setState([]);
+        }
       }
     } else if (!isEnd) {
       setChoice(Number(choice));
@@ -141,45 +222,18 @@ function App() {
       } else {
         setIsLie(false);
       }
-      if (confidence === 0) {
-        setIsSame(false);
-        random = getRandomOtherNumber(Number(choice));
-        setRealChoice(random);
-      } else if (confidence <= 3) {
-        if (getRandomInt(0, 4) === 0) {
-          setIsSame(true);
-        } else {
-          setIsSame(false);
-          random = getRandomOtherNumber(Number(choice));
-          setRealChoice(random);
-        }
-      } else if (confidence <= 6) {
-        if (round === 1) {
-          setIsSame(true);
-        } else if (getRandomInt(1, 2) === 1) {
-          setIsSame(true);
-        } else {
-          setIsSame(false);
-          random = getRandomOtherNumber(Number(choice));
-          setRealChoice(random);
-        }
-      } else if (confidence <= 9) {
-        if (getRandomInt(0, 4) === 1) {
-          setIsSame(false);
-          random = getRandomOtherNumber(Number(choice));
-          setRealChoice(random);
-        } else {
-          setIsSame(true);
+      setCommand(false);
+      if (
+        (isExit && exit != alert && isSame && userChoice === exit) ||
+        sin >= 10
+      ) {
+        setIsEnd(true);
+        if (sin >= 10) {
+          setEnd(1);
         }
       } else {
-        setIsSame(true);
+        setIsEnd(false);
       }
-      if (realChoice === alert || getRandomInt(0, 2) === 1) {
-        fuck = true;
-        setIsFucked(fuck);
-        setSin(sin + 1);
-      }
-      setCommand(false);
     }
   };
 
@@ -198,36 +252,53 @@ function App() {
             ></Status>
           </div>
           <div className="m-5 p-3 bg-dark rounded-lg shadow-lg w-90 mx-auto">
-            {isIntro ? (
-              <Information>
-                {textLines.map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
-              </Information>
+            {!isEnd ? (
+              isIntro ? (
+                <Information>
+                  {textLines.map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+                </Information>
+              ) : (
+                <Evenements
+                  userChoice={userChoice}
+                  isFucked={isFucked}
+                  alert={alert}
+                  //realChoice={random}
+                  isAnswer={isAnswer}
+                  isPregnant={isPregnent}
+                  isVouloir={isVouloir}
+                  indexOfEvent={indexOfEvent}
+                  isSameChoice={isSame}
+                  isLie={isLie}
+                  cloth={cloth}
+                  exit={exit}
+                />
+              )
             ) : (
-              <Evenements
-                userChoice={choice}
-                isFucked={isFucked}
-                alert={alert}
-                realChoice={random}
-                isAnswer={isAnswer}
-                isPregnant={isPregnent}
-                isVouloir={isVouloir}
-                indexOfEvent={indexOfEvent}
-                isSameChoice={isSame}
-                isLie={isLie}
-                cloth={cloth}
-              ></Evenements>
+              <End end={end} sin={sin} wu={wu} wei={wei} chu={chu}></End>
             )}
           </div>
         </div>
-        {command ? commands : <True onClick={() => click("好的")}>好的</True>}
+        {!isEnd ? (
+          command ? (
+            commands
+          ) : (
+            <True onClick={() => click("好的")}>好的</True>
+          )
+        ) : (
+          <Refresh onClick={() => ReFresh()}>重新开始</Refresh>
+        )}
       </div>
     </>
   );
 }
 
 export default App;
+
+function ReFresh() {
+  window.location.reload();
+}
 
 function getRandomInt(min: number, max: number): number {
   if (min > max) {
@@ -242,11 +313,4 @@ function getRandomInt(min: number, max: number): number {
 
 function isStringInList(target: string, list: string[]): boolean {
   return list.includes(target);
-}
-
-function getRandomOtherNumber(num: number): number {
-  const options = [0, 1, 2].filter((n) => n !== num);
-  const randomIndex = Math.floor(Math.random() * options.length);
-
-  return options[randomIndex];
 }
