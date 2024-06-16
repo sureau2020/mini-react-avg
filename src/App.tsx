@@ -54,6 +54,11 @@ function App() {
   const [isSame, setIsSame] = useState(false); //小章和玩家一不一样
   const [realChoice, setRealChoice] = useState(0);
   const [isIntro, setIsIntro] = useState(true);
+  const [isFucked, setIsFucked] = useState(false);
+  const [choice, setChoice] = useState(0);
+
+  let random: number = 0;
+  let fuck: boolean;
 
   const commands = (
     <div
@@ -74,7 +79,21 @@ function App() {
     }
   }, [indexOfEvent, randomN]);
 
+  useEffect(() => {
+    if (realChoice !== null) {
+      setRealChoice(random);
+    }
+  }, [realChoice]);
+
+  useEffect(() => {
+    if (isFucked !== null) {
+      setIsFucked(fuck);
+    }
+  }, [isFucked]);
+
   const click = (choice: string) => {
+    fuck = false;
+    setIsFucked(fuck);
     if (choice === "好的" && !isEnd) {
       setRound((prevRound) => prevRound + 1);
       setIsAnswer(false);
@@ -82,6 +101,7 @@ function App() {
         setTextLines(intros[round + 1].split("\n"));
         setIsWarning(false);
       } else if (round > 0) {
+        setIsAnswer(false);
         setIsIntro(false);
         setIsWarning(true);
         setCommand(true);
@@ -92,20 +112,20 @@ function App() {
         }
         if (isStringInList("中媚药", state)) {
           if (isStringInList("怀孕", state)) {
-            setRandomN(getRandomInt(0, 3));
+            setRandomN(getRandomInt(0, 15));
             setIsPregnent(true);
             setIsVouloir(true);
           } else {
-            setRandomN(getRandomInt(1, 3));
+            setRandomN(getRandomInt(1, 15));
             setIsPregnent(false);
             setIsVouloir(true);
           }
         } else if (isStringInList("怀孕", state)) {
-          setRandomN(getRandomInt(0, 2));
+          setRandomN(getRandomInt(0, 14));
           setIsPregnent(true);
           setIsVouloir(false);
         } else {
-          let tmp = getRandomInt(1, 2);
+          let tmp = getRandomInt(1, 14);
           setRandomN(tmp);
           setIsPregnent(false);
           setIsVouloir(false);
@@ -114,6 +134,8 @@ function App() {
         setAlert(getRandomInt(0, 2));
       }
     } else if (!isEnd) {
+      setChoice(Number(choice));
+      setIsAnswer(true);
       if (Number(choice) === alert) {
         setIsLie(true);
       } else {
@@ -121,13 +143,15 @@ function App() {
       }
       if (confidence === 0) {
         setIsSame(false);
-        setRealChoice(getRandomOtherNumber(Number(choice)));
+        random = getRandomOtherNumber(Number(choice));
+        setRealChoice(random);
       } else if (confidence <= 3) {
         if (getRandomInt(0, 4) === 0) {
           setIsSame(true);
         } else {
           setIsSame(false);
-          setRealChoice(getRandomOtherNumber(Number(choice)));
+          random = getRandomOtherNumber(Number(choice));
+          setRealChoice(random);
         }
       } else if (confidence <= 6) {
         if (round === 1) {
@@ -136,18 +160,26 @@ function App() {
           setIsSame(true);
         } else {
           setIsSame(false);
-          setRealChoice(getRandomOtherNumber(Number(choice)));
+          random = getRandomOtherNumber(Number(choice));
+          setRealChoice(random);
         }
       } else if (confidence <= 9) {
         if (getRandomInt(0, 4) === 1) {
           setIsSame(false);
-          setRealChoice(getRandomOtherNumber(Number(choice)));
+          random = getRandomOtherNumber(Number(choice));
+          setRealChoice(random);
         } else {
           setIsSame(true);
         }
       } else {
         setIsSame(true);
       }
+      if (realChoice === alert || getRandomInt(0, 2) === 1) {
+        fuck = true;
+        setIsFucked(fuck);
+        setSin(sin + 1);
+      }
+      setCommand(false);
     }
   };
 
@@ -174,8 +206,10 @@ function App() {
               </Information>
             ) : (
               <Evenements
+                userChoice={choice}
+                isFucked={isFucked}
                 alert={alert}
-                realChoice={realChoice}
+                realChoice={random}
                 isAnswer={isAnswer}
                 isPregnant={isPregnent}
                 isVouloir={isVouloir}
@@ -201,7 +235,9 @@ function getRandomInt(min: number, max: number): number {
   }
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  let result = Math.floor(Math.random() * (max - min + 1)) + min;
+  console.log("随机数：" + result);
+  return result;
 }
 
 function isStringInList(target: string, list: string[]): boolean {
