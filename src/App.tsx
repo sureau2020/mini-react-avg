@@ -55,7 +55,6 @@ function App() {
   const [isAnswer, setIsAnswer] = useState(false);
   const [isLie, setIsLie] = useState(false);
   const [isSame, setIsSame] = useState(false); //小章和玩家一不一样
-  //const [realChoice, setRealChoice] = useState(0);
   const [isIntro, setIsIntro] = useState(true);
   const [isFucked, setIsFucked] = useState(false);
   const [userChoice, setChoice] = useState(0);
@@ -82,20 +81,6 @@ function App() {
       setIndexOfEvent(randomN);
     }
   }, [indexOfEvent, randomN]);
-
-  /*useEffect(() => {
-    if (realChoice !== null) {
-      setRealChoice(random);
-    }
-  }, [realChoice]);
-  */
-
-  /*useEffect(() => {
-    if (isFucked !== null) {
-      setIsFucked(fuck);
-    }
-  }, [isFucked]);
-  */
 
   const click = (choice: string) => {
     if (choice === "好的" && !isEnd) {
@@ -308,7 +293,6 @@ function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
   let result = Math.floor(Math.random() * (max - min + 1)) + min;
-  console.log("随机数：" + result);
   return result;
 }
 

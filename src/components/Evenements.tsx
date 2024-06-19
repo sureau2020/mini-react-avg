@@ -14,17 +14,6 @@ interface Props {
 }
 
 const Events = (props: Props) => {
-  console.log("answer?:" + props.isAnswer);
-  console.log("alert:" + props.alert);
-  console.log("isPregnant:" + props.isPregnant);
-  console.log("isVouloir:" + props.isVouloir);
-  console.log("isSameChoice:" + props.isSameChoice);
-  console.log("isLie:" + props.isLie);
-  console.log("indexOfEvent:" + props.indexOfEvent);
-  console.log("cloth:" + props.cloth);
-  console.log("isFucked:" + props.isFucked);
-  console.log("userChoice:" + props.userChoice);
-
   let finalChoice: number = 0;
   let textLines: string[] = [];
   if (!props.isAnswer) {
