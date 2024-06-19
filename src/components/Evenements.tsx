@@ -73,7 +73,13 @@ const Events = (props: Props) => {
           finalChoice === props.alert ||
           (props.isFucked && !props.isSameChoice)
         ) {
-          textLines.push("撤退遇到危险。");
+          if (props.isVouloir) {
+            textLines = textLines.concat(
+              backVouloir[props.indexOfEvent].split("\n")
+            );
+          } else {
+            textLines.push("撤退遇到危险。");
+          }
         } else {
           const tmp = backNormal[props.indexOfEvent].split("\n");
           textLines = textLines.concat(tmp);
@@ -200,6 +206,8 @@ const conseils = [
 ];
 
 const actions = ["撤退", "原地躲藏", "前进"];
+
+const backVouloir = [``];
 
 const backNormal = [
   `他刚回到爬梯下的小空间，便腿一软倒在角落里。

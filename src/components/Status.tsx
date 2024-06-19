@@ -27,14 +27,24 @@ function Status(props: Props) {
 
   return (
     <div>
-      <p className="text-warning">
-        当前状态：{status.join("、")}
+      <p className="text-light">
+        当前状态：<i>{status.join("、")}</i>
         <br />
-        当前服装：{props.cloth}
+        当前服装：<i>{props.cloth}</i>
         <br />
-        当前信任度：（{props.trust}/10）{stateOfTrust}
+        当前信任度：
+        {props.trust < 4 ? (
+          <b>
+            （{props.trust}/10）{stateOfTrust}
+          </b>
+        ) : (
+          <i>
+            （{props.trust}/10）{stateOfTrust}
+          </i>
+        )}
         <br />
-        堕落程度：（{props.sin}/10）
+        堕落程度：
+        {props.sin >= 8 ? <b>（{props.sin}/10）</b> : <i>（{props.sin}/10）</i>}
       </p>
     </div>
   );

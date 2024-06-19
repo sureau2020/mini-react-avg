@@ -95,7 +95,9 @@ function App() {
         setIsWarning(true);
         setCommand(true);
         if ((isFucked && !isSame) || (isSame && isLie)) {
-          setSin(sin + 1);
+          if (indexOfEvent != 12) {
+            setSin(sin + 1);
+          }
         }
         if (isLie && isSame) {
           setConfidence(confidence - 1);
@@ -229,7 +231,7 @@ function App() {
         <div id="shangmiande">
           {isExit ? <Exit>{exits[exit]}</Exit> : null}
           <div>{isWarning ? <Alert>警告：{alerts[alert]}</Alert> : null}</div>
-          <div className="m-2 p-3 bg-dark rounded-lg shadow-lg w-50 mx-auto">
+          <div className="m-2 p-3 bg-dark rounded-lg shadow-lg w-75 mx-auto">
             <Status
               state={state}
               cloth={cloth}
