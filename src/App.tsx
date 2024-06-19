@@ -194,6 +194,7 @@ function App() {
         }
         if (indexOfEvent === 12) {
           setIsFucked(false);
+          setIsWarning(false);
         }
         if (indexOfEvent === 15) {
           setState(state.filter((item) => item !== "中媚药"));
