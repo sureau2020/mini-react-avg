@@ -168,7 +168,7 @@ function App() {
         } else {
           setIsSame(true);
         }
-        if (round % 3 === 0) {
+        if (round % 9 === 0) {
           setIsExit(true);
           setExit(getRandomInt(0, 2));
         } else {
@@ -191,6 +191,9 @@ function App() {
             setState(state.concat("中媚药"));
             setIsVouloir(true);
           }
+        }
+        if (indexOfEvent === 12) {
+          setIsFucked(false);
         }
         if (indexOfEvent === 15) {
           setState(state.filter((item) => item !== "中媚药"));
@@ -225,7 +228,7 @@ function App() {
       }
       setCommand(false);
       if (
-        (isExit && exit != alert && isSame && userChoice === exit) ||
+        (isExit && exit != alert && isSame && Number(choice) === exit) ||
         sin >= 10
       ) {
         setIsEnd(true);
