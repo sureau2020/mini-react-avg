@@ -252,6 +252,7 @@ function App() {
                 </Information>
               ) : (
                 <Evenements
+                  isExit={isExit}
                   userChoice={userChoice}
                   isFucked={isFucked}
                   alert={alert}
