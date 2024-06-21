@@ -95,7 +95,10 @@ function App() {
         setIsWarning(true);
         setCommand(true);
         if ((isFucked && !isSame) || (isSame && isLie)) {
-          if (indexOfEvent != 12) {
+          if (indexOfEvent === 12) {
+            setSin(sin - 1);
+          }
+          if (indexOfEvent != 12 && indexOfEvent != 3 && indexOfEvent != 10) {
             setSin(sin + 1);
           }
         }
@@ -163,7 +166,7 @@ function App() {
         }
         if (
           (indexOfEvent === 6 || indexOfEvent === 1) &&
-          (isFucked || (isLie && isSame))
+          ((isFucked && !isSame) || (isLie && isSame))
         ) {
           if (!isStringInList("怀孕", state)) {
             setState(state.concat("怀孕"));
@@ -172,7 +175,7 @@ function App() {
         }
         if (
           (indexOfEvent === 3 || indexOfEvent === 10) &&
-          (isFucked || (isLie && isSame))
+          ((isFucked && !isSame) || (isLie && isSame))
         ) {
           if (!isStringInList("中媚药", state)) {
             setState(state.concat("中媚药"));
