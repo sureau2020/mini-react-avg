@@ -62,6 +62,7 @@ function App() {
   const [wu, setWu] = useState(0);
   const [chu, setChu] = useState(0);
   const [wei, setWei] = useState(0);
+  const [hideEnd, setHideEnd] = useState(false);
 
   const commands = (
     <div
@@ -100,7 +101,7 @@ function App() {
         setIsWarning(true);
         setCommand(true);
         if ((isFucked && !isSame) || (isSame && isLie)) {
-          if (indexOfEvent === 12) {
+          if (indexOfEvent === 12 || indexOfEvent === 16) {
             setSin(sin - 1);
           }
           if (indexOfEvent != 12 && indexOfEvent != 3 && indexOfEvent != 10) {
@@ -114,21 +115,36 @@ function App() {
         }
         if (isStringInList("中媚药", state)) {
           if (isStringInList("怀孕", state)) {
-            setRandomN(getRandomInt(0, 15));
+            if (wei >= 1 && wu >= 1 && chu >= 1) {
+              setRandomN(getRandomInt(0, 16));
+            } else {
+              setRandomN(getRandomInt(0, 15));
+            }
             setIsPregnent(true);
             setIsVouloir(true);
           } else {
-            setRandomN(getRandomInt(1, 15));
+            if (wei >= 1 && wu >= 1 && chu >= 1) {
+              setRandomN(getRandomInt(1, 16));
+            } else {
+              setRandomN(getRandomInt(1, 15));
+            }
             setIsPregnent(false);
             setIsVouloir(true);
           }
         } else if (isStringInList("怀孕", state)) {
-          setRandomN(getRandomInt(0, 14));
+          if (wei >= 1 && wu >= 1 && chu >= 1) {
+            setRandomN(getRandomIntWithExlude(0, 16, 15));
+          } else {
+            setRandomN(getRandomInt(0, 14));
+          }
           setIsPregnent(true);
           setIsVouloir(false);
         } else {
-          let tmp = getRandomInt(1, 14);
-          setRandomN(tmp);
+          if (wei >= 1 && wu >= 1 && chu >= 1) {
+            setRandomN(getRandomIntWithExlude(1, 16, 15));
+          } else {
+            setRandomN(getRandomInt(1, 14));
+          }
           setIsPregnent(false);
           setIsVouloir(false);
         }
@@ -209,6 +225,9 @@ function App() {
           setCloth("血仆裙");
           setState([]);
         }
+        if (indexOfEvent === 16) {
+          setHideEnd(true);
+        }
       }
     } else if (!isEnd) {
       setChoice(Number(choice));
@@ -273,7 +292,14 @@ function App() {
                 />
               )
             ) : (
-              <End end={end} sin={sin} wu={wu} wei={wei} chu={chu}></End>
+              <End
+                end={end}
+                sin={sin}
+                wu={wu}
+                wei={wei}
+                chu={chu}
+                hideEnd={hideEnd}
+              ></End>
             )}
           </div>
         </div>
@@ -309,4 +335,29 @@ function getRandomInt(min: number, max: number): number {
 
 function isStringInList(target: string, list: string[]): boolean {
   return list.includes(target);
+}
+
+function getRandomIntWithExlude(
+  min: number,
+  max: number,
+  exclude: number
+): number {
+  if (min > max) {
+    throw new Error("最小值不能大于最大值");
+  }
+
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  let result: number;
+  const range = max - min + 1;
+  if (range <= 1 && (min === exclude || max === exclude)) {
+    throw new Error("没有足够的数字可以选择");
+  }
+
+  do {
+    result = Math.floor(Math.random() * range) + min;
+  } while (result === exclude);
+
+  return result;
 }
