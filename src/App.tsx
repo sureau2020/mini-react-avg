@@ -29,7 +29,7 @@ function App() {
 你没感知到的地方也可能有危险。
 当周围出现出口时，一条绿色的提示信息会出现在界面顶部。
 你可以帮助章北海找到出口并离开，也可以……自己看着办。`,
-    `⚠双性章 ⚠未满18岁自觉离开本界面
+    `        + 制作人：Ag口、举Fe +
 章北海从昏沉中醒来，映入眼帘的是一间舱室——他在长安舰上的办公室。
 他下床环顾四周，房间摆设一切如旧，只在桌面上多出了一枚简易提示器。
 形似寻呼机的提示器被他拿起，仔细检查，但未见异常。
@@ -46,7 +46,7 @@ function App() {
   const [cloth, setCloth] = useState("常服");
   const [confidence, setConfidence] = useState(5);
   const [sin, setSin] = useState(0);
-  const [alert, setAlert] = useState<number>(3);
+  const [alertt, setAlert] = useState<number>(3);
   const [exit, setExit] = useState(2);
   const [randomN, setRandomN] = useState(1);
   const [indexOfEvent, setIndexOfEvent] = useState<number>(0);
@@ -87,6 +87,11 @@ function App() {
       setRound((prevRound) => prevRound + 1);
       setIsAnswer(false);
       if (round === 0) {
+        alert(`⚠双性章 
+⚠OOC 
+⚠纯虚拟黄油不包含任何影射
+⚠应该不恐怖，章只会被操不会被杀
+⚠点击确认即确认已满18周岁，不满18请立刻关闭网站 `);
         setTextLines(intros[round + 1].split("\n"));
         setIsWarning(false);
       } else if (round > 0) {
@@ -208,14 +213,14 @@ function App() {
     } else if (!isEnd) {
       setChoice(Number(choice));
       setIsAnswer(true);
-      if (Number(choice) === alert) {
+      if (Number(choice) === alertt) {
         setIsLie(true);
       } else {
         setIsLie(false);
       }
       setCommand(false);
       if (
-        (isExit && exit != alert && isSame && Number(choice) === exit) ||
+        (isExit && exit != alertt && isSame && Number(choice) === exit) ||
         sin >= 10
       ) {
         setIsEnd(true);
@@ -233,7 +238,7 @@ function App() {
       <div className="m-2 p-5  w-90 mx-auto">
         <div id="shangmiande">
           {isExit ? <Exit>{exits[exit]}</Exit> : null}
-          <div>{isWarning ? <Alert>警告：{alerts[alert]}</Alert> : null}</div>
+          <div>{isWarning ? <Alert>警告：{alerts[alertt]}</Alert> : null}</div>
           <div className="m-2 p-3 bg-dark rounded-lg shadow-lg w-100 mx-auto">
             <Status
               state={state}
@@ -255,7 +260,7 @@ function App() {
                   isExit={isExit}
                   userChoice={userChoice}
                   isFucked={isFucked}
-                  alert={alert}
+                  alert={alertt}
                   //realChoice={random}
                   isAnswer={isAnswer}
                   isPregnant={isPregnent}
