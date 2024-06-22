@@ -45,7 +45,7 @@ const Events = (props: Props) => {
     } else if (
       props.userChoice === props.alert &&
       props.isSameChoice &&
-      props.userChoice != props.exit
+      (props.userChoice != props.exit || !props.isExit)
     ) {
       textLines.push("章北海听从了你的建议，但你骗了他。");
     } else if (!props.isSameChoice && props.userChoice === props.alert) {
@@ -60,25 +60,14 @@ const Events = (props: Props) => {
     } else if (props.isSameChoice && props.userChoice != props.alert) {
       textLines.push(`章北海听从了你的建议。`);
     } else {
-      if (props.userChoice === 0) {
-        if (props.isFucked) {
-          finalChoice = props.alert;
-        } else {
-          props.alert === 1 ? (finalChoice = 2) : (finalChoice = 1);
-        }
-        textLines.push(
-          `章北海考虑再三，没有听从你的建议，而是选择了${actions[finalChoice]}。`
-        );
+      if (props.isFucked) {
+        finalChoice = props.alert;
       } else {
-        if (props.isFucked) {
-          finalChoice = props.alert;
-        } else {
-          finalChoice = findRemainingNumber(props.alert, props.userChoice);
-        }
-        textLines.push(
-          `章北海考虑再三，没有听从你的建议，而是选择了${actions[finalChoice]}。`
-        );
+        finalChoice = findRemainingNumber(props.alert, props.userChoice);
       }
+      textLines.push(
+        `章北海考虑再三，没有听从你的建议，而是选择了${actions[finalChoice]}。`
+      );
     }
     if (props.isSameChoice) {
       finalChoice = props.userChoice;
@@ -152,9 +141,6 @@ export default Events;
 function findRemainingNumber(num1: number, num2: number): number {
   const numbers = [0, 1, 2];
   const remaining = numbers.filter((num) => num !== num1 && num !== num2);
-  if (remaining.length !== 1) {
-    throw new Error("Invalid input numbers");
-  }
   return remaining[0];
 }
 
@@ -1424,6 +1410,8 @@ const goNormal = [
 见药效得不到缓解，他学着别人对他做的那样，将两根手指伸进自己早已水流成河的蜜穴。
 章北海难得笨拙的动作让他的快感获得得很慢，捣鼓好一会才去了一次。
 但他掌握得很快，又弄了一次后面红耳赤但是神清气爽地离开了。`,
+
+  ``,
 
   ``,
 ];
