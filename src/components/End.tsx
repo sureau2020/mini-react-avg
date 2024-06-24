@@ -15,7 +15,10 @@ function End(props: Props) {
       colour = "text-white";
       finalEnd = 5;
     } else if (
-      (props.hideEnd && props.chu >= 2, props.wei >= 2, props.wu >= 2)
+      props.hideEnd &&
+      props.chu >= 2 &&
+      props.wei >= 2 &&
+      props.wu >= 2
     ) {
       colour = "text-danger";
       finalEnd = 4;
@@ -104,13 +107,15 @@ const ends: string[] = [
 达成条件：触发雄竞事件+遇见三人的次数>=2`,
   `真结局：真正的种地玩家在黄油里也可以种地
   条件：找到出口时堕落指数<=0`,
+  `原著结局
+  条件：谁也没遇上`,
 ];
 
 function findLastIndexOfMax(a: number, b: number, c: number): number {
   const numbers = [a, b, c];
   let maxIndex = 0;
-  if (a === b && a === c && b === c) {
-    return 4;
+  if (a === 0 && c === 0 && b === 0) {
+    return 6;
   }
 
   for (let i = 1; i < numbers.length; i++) {
