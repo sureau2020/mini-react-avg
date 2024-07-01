@@ -135,10 +135,12 @@ const Events = (props: Props) => {
               goDanger[props.indexOfEvent].split("\n")
             );
           } else if (props.isPregnant) {
-            textLines = textLines.concat(hideP[props.indexOfEvent].split("\n"));
-          } else if (props.cloth === "常服下捆绑") {
             textLines = textLines.concat(
               goDanger[props.indexOfEvent].split("\n")
+            );
+          } else if (props.cloth === "常服下捆绑") {
+            textLines = textLines.concat(
+              goRope[props.indexOfEvent].split("\n")
             );
           } else {
             textLines = textLines.concat(
