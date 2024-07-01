@@ -15,7 +15,7 @@ function App() {
     "撤退有危险。",
     "原地躲藏有危险。",
     "前进有危险。",
-    "结局未完成，前进遇到危险未完成",
+    "只差春药状态下前进省一点没写了",
   ];
   const exits: string[] = [
     "撤退可达出口。",
@@ -293,6 +293,7 @@ function App() {
               )
             ) : (
               <End
+                confidence={confidence}
                 end={end}
                 sin={sin}
                 wu={wu}
